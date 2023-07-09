@@ -19,6 +19,14 @@ export const typeDefs = `#graphql
     createUser(name: String!, password: String!, email: String!): UserPayload!
     createProfile(bio: String!): ProfilePayload!
     createPost(title: String!, content: String!, published: Boolean): PostPayload!
+
+    updateUser(id: ID!, name: String, password: String, email: String): UserPayload!
+    updateProfile(id: ID!, bio: String): ProfilePayload!
+    updatePost(id: ID!, title: String, content: String, published: Boolean): PostPayload!
+    
+    deleteUser(id: ID!): UserPayload!
+    deleteProfile(id: ID!): ProfilePayload!
+    deletePost(id: ID!): PostPayload!
   }
 
   type Post {
@@ -63,6 +71,7 @@ export const typeDefs = `#graphql
     error: Error
     post: Post
   }
+  
 
 
 
