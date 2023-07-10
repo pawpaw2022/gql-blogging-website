@@ -16,18 +16,24 @@ export const typeDefs = `#graphql
   }
 
   type Mutation {
-    createUser(name: String!, password: String!, email: String!): UserPayload!
-    createProfile(bio: String!): ProfilePayload!
-    createPost(title: String!, content: String!, published: Boolean): PostPayload!
-
-    updateUser(id: ID!, name: String, password: String, email: String): UserPayload!
-    updateProfile(id: ID!, bio: String): ProfilePayload!
-    updatePost(id: ID!, title: String, content: String, published: Boolean): PostPayload!
+    # User Auth 
+    signup(credentials: Credentials!, name: String!, bio: String!): UserPayload!
+    signin(credentials: Credentials!): UserPayload!
     
-    deleteUser(id: ID!): UserPayload!
-    deleteProfile(id: ID!): ProfilePayload!
+    # Post Mutations
+    createPost(title: String!, content: String!): PostPayload!
+    updatePost(id: ID!, title: String, content: String): PostPayload!
     deletePost(id: ID!): PostPayload!
+
+    # Post Publish
+    publishPost(id: ID!): PostPayload!
+    unpublishPost(id: ID!): PostPayload!
+
+    # Profile Update
+    updateProfile(bio: String!): ProfilePayload!
   }
+
+
 
   type Post {
     id: ID!
@@ -59,7 +65,7 @@ export const typeDefs = `#graphql
 
   type UserPayload {
     error: Error
-    user: User
+    token: String
   }
 
   type ProfilePayload {
@@ -71,9 +77,10 @@ export const typeDefs = `#graphql
     error: Error
     post: Post
   }
-  
 
-
-
+  input Credentials {
+    email: String!
+    password: String!
+  }
 
 `;

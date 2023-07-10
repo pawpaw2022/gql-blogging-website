@@ -6,14 +6,17 @@ import { PrismaClient } from "@prisma/client";
 import { typeDefs } from "./schema";
 import { Query } from "./resolvers/Query";
 import { User } from "./resolvers/User";
-import { Mutation } from "./resolvers/Mutation";
 import { Post } from "./resolvers/Post";
 import { Profile } from "./resolvers/Profile";
+import { PostMutation } from "./resolvers/mutation/Post";
+import { UserAuth } from "./resolvers/mutation/Auth";
+import { ProfileMutation } from "./resolvers/mutation/Profile";
 
 const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient;
+  req: any;
 }
 
 // The ApolloServer constructor requires two parameters: your schema
@@ -25,7 +28,11 @@ const server = new ApolloServer({
     User,
     Post,
     Profile,
-    Mutation,
+    Mutation: {
+      ...PostMutation,
+      ...UserAuth,
+      ...ProfileMutation,
+    },
   },
 });
 
@@ -35,7 +42,7 @@ const server = new ApolloServer({
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
-  context: async (): Promise<Context> => ({ prisma }),
+  context: async ({ req }): Promise<Context> => ({ prisma, req }),
 });
 
 console.log(`🚀  Server ready at: ${url}`);
