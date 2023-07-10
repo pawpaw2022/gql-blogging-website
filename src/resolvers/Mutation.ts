@@ -2,6 +2,11 @@
 
 import { Context } from "../index";
 import { ErrorReferece } from "../utils/prismaErrCode";
+import {
+  validatePost,
+  validateProfile,
+  validateUser,
+} from "../utils/Validation";
 
 interface UserArgs {
   name: string;
@@ -25,6 +30,10 @@ interface ProfileArgs {
 export const Mutation = {
   createUser: async (_: any, args: UserArgs, { prisma }: Context) => {
     const { name, password, email } = args;
+
+    if (validateUser(email, password, name))
+      return validateUser(email, password, name);
+
     try {
       const user = await prisma.user.create({
         data: {
@@ -47,6 +56,8 @@ export const Mutation = {
 
   createPost: async (_: any, args: PostArgs, { prisma }: Context) => {
     const { title, content, published } = args;
+
+    if (!validatePost(title, content)) return validatePost(title, content);
 
     try {
       const post = await prisma.post.create({
@@ -71,6 +82,9 @@ export const Mutation = {
 
   createProfile: async (_: any, args: ProfileArgs, { prisma }: Context) => {
     const { bio } = args;
+
+    if (validateProfile(bio)) return validateProfile(bio);
+
     try {
       const profile = await prisma.profile.create({
         data: {
@@ -92,6 +106,10 @@ export const Mutation = {
 
   updateUser: async (_: any, args: UserArgs, { prisma }: Context) => {
     const { name, password, email, id } = args;
+
+    if (validateUser(email, password, name))
+      return validateUser(email, password, name);
+
     try {
       const user = await prisma.user.update({
         where: {
@@ -117,6 +135,9 @@ export const Mutation = {
 
   updatePost: async (_: any, args: PostArgs, { prisma }: Context) => {
     const { title, content, published, id } = args;
+
+    if (!validatePost(title, content)) return validatePost(title, content);
+
     try {
       const post = await prisma.post.update({
         where: {
@@ -142,6 +163,9 @@ export const Mutation = {
 
   updateProfile: async (_: any, args: ProfileArgs, { prisma }: Context) => {
     const { bio, id } = args;
+
+    if (validateProfile(bio)) return validateProfile(bio);
+
     try {
       const profile = await prisma.profile.update({
         where: {
