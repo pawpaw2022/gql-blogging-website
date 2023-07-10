@@ -40,7 +40,7 @@ export const typeDefs = `#graphql
     title: String!
     content: String!
     published: Boolean
-    userId: Int!
+    authorId: Int!
     user: User!
   }
 

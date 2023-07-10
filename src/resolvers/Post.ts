@@ -1,15 +1,16 @@
 /** @format */
 
 interface PostParent {
-  userId: number;
+  authorId: number;
 }
 
 export const Post = {
   user: (parent: PostParent, _: any, { prisma }: any) => {
-    const { userId } = parent;
+    const { authorId } = parent;
+
     return prisma.user.findUnique({
       where: {
-        id: userId,
+        id: authorId,
       },
     });
   },

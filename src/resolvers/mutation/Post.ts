@@ -2,7 +2,6 @@
 
 import { Context } from "vm";
 import { validatePost } from "../../utils/Validation";
-
 interface PostArgs {
   title: string;
   content: string;
@@ -10,7 +9,10 @@ interface PostArgs {
 }
 
 export const PostMutation = {
-  createPost: async (_: any, args: PostArgs, { prisma }: Context) => {
+  createPost: async (_: any, args: PostArgs, { prisma, user }: Context) => {
+    const res = await user;
+    // console.log(res);
+
     const { title, content } = args;
 
     if (validatePost(title, content)) return validatePost(title, content);
@@ -20,7 +22,7 @@ export const PostMutation = {
         data: {
           title,
           content,
-          authorId: 1,
+          authorId: res.userId,
         },
       });
       return {

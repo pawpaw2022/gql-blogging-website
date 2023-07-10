@@ -11,12 +11,13 @@ import { Profile } from "./resolvers/Profile";
 import { PostMutation } from "./resolvers/mutation/Post";
 import { UserAuth } from "./resolvers/mutation/Auth";
 import { ProfileMutation } from "./resolvers/mutation/Profile";
+import { UserPayload, getUserFromToken } from "./utils/JwtAuth";
 
 const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient;
-  req: any;
+  user: any;
 }
 
 // The ApolloServer constructor requires two parameters: your schema
@@ -42,7 +43,10 @@ const server = new ApolloServer({
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
-  context: async ({ req }): Promise<Context> => ({ prisma, req }),
+  context: async ({ req }): Promise<Context> => ({
+    prisma,
+    user: getUserFromToken(req.headers.authorization),
+  }),
 });
 
 console.log(`🚀  Server ready at: ${url}`);
