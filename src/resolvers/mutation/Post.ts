@@ -1,6 +1,7 @@
 /** @format */
 
-import { Context } from "vm";
+import { Context } from "../..";
+import { canUserMutatePost, getUserFromToken } from "../../utils/JwtAuth";
 import { validatePost } from "../../utils/Validation";
 interface PostArgs {
   title: string;
@@ -9,9 +10,10 @@ interface PostArgs {
 }
 
 export const PostMutation = {
-  createPost: async (_: any, args: PostArgs, { prisma, user }: Context) => {
-    const res = await user;
-    // console.log(res);
+  createPost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
 
     const { title, content } = args;
 
@@ -22,7 +24,7 @@ export const PostMutation = {
         data: {
           title,
           content,
-          authorId: res.userId,
+          authorId: userId,
         },
       });
       return {
@@ -37,15 +39,22 @@ export const PostMutation = {
     }
   },
 
-  updatePost: async (_: any, args: PostArgs, { prisma }: Context) => {
-    const { title, content, id } = args;
+  updatePost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+    const { title, content, id: postId } = args;
 
-    if (!validatePost(title, content)) return validatePost(title, content);
+    // Step 1: check if user is logged in
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
+
+    // Step 2: check if user can mutate post
+    const canMutate = await canUserMutatePost(prisma, userId, postId);
+    if (canMutate?.error) return canMutate;
 
     try {
       const post = await prisma.post.update({
         where: {
-          id: Number(id),
+          id: Number(postId),
         },
         data: {
           title,
@@ -64,12 +73,26 @@ export const PostMutation = {
     }
   },
 
-  deletePost: async (_: any, args: { id: string }, { prisma }: Context) => {
-    const { id } = args;
+  deletePost: async (
+    _: any,
+    args: { id: string },
+    { prisma, auth }: Context
+  ) => {
+    const { id: postId } = args;
+
+    // Step 1: check if user is logged in
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
+
+    // Step 2: check if user can mutate post
+    const canMutate = await canUserMutatePost(prisma, userId, postId);
+    if (canMutate?.error) return canMutate;
+
     try {
       const post = await prisma.post.delete({
         where: {
-          id: Number(id),
+          id: Number(postId),
         },
       });
       return {

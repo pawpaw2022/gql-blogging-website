@@ -1,10 +1,10 @@
 /** @format */
 
-import { Context } from "vm";
 import { validateCredentials, validateUser } from "../../utils/Validation";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { HASHKEY } from "../../utils/hashKey";
+import { Context } from "../../index";
 
 interface UserArgs {
   name: string;
