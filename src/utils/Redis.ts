@@ -13,6 +13,8 @@ export const redisStart = async (): Promise<RedisClient> => {
 
   await client.connect();
 
+  client.expire("posts", 60 * 60 * 24); // 24 hours
+
   return client;
 };
 
