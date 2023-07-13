@@ -1,6 +1,7 @@
 /** @format */
 import { Context } from "../index";
 import { getUserFromToken } from "../utils/JwtAuth";
+import { parsePosts } from "../utils/Redis";
 
 // Resolvers define how to fetch the types defined in your schema.
 export const Query = {
@@ -30,19 +31,13 @@ export const Query = {
     });
   },
 
-  posts: (_: any, __: any, { prisma }: Context) => {
-    return prisma.post.findMany({
-      orderBy: {
-        updatedAt: "desc",
-      },
-    });
+  posts: (_: any, __: any, { redis }: Context) => {
+    return parsePosts(redis);
   },
 
-  post: (_: any, { id }: { id: String }, { prisma }: Context) => {
-    return prisma.post.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+  post: async (_: any, { id }: { id: String }, { redis }: Context) => {
+    const posts = await parsePosts(redis);
+    const post = posts.find((post: any) => post.id === Number(id));
+    return post;
   },
 };

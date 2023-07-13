@@ -7,9 +7,8 @@ interface PostParent {
 }
 
 export const Post = {
-  user: (parent: PostParent, _: any, { prisma }: any) => {
+  user: (parent: PostParent, _: any, __: any) => {
     const { authorId } = parent;
-
     return userLoader.load(authorId);
   },
 };

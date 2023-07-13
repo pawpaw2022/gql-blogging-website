@@ -11,12 +11,18 @@ import { Profile } from "./resolvers/Profile";
 import { PostMutation } from "./resolvers/mutation/Post";
 import { UserAuth } from "./resolvers/mutation/Auth";
 import { ProfileMutation } from "./resolvers/mutation/Profile";
+import { redisStart } from "./utils/Redis";
 
 export const prisma = new PrismaClient();
+
+const redis = await redisStart();
+
+// console.log(await redis.del("posts"));
 
 export interface Context {
   prisma: PrismaClient;
   auth: string | undefined;
+  redis: typeof redis;
 }
 
 // The ApolloServer constructor requires two parameters: your schema
@@ -45,6 +51,7 @@ const { url } = await startStandaloneServer(server, {
   context: async ({ req }): Promise<Context> => ({
     prisma,
     auth: req.headers.authorization,
+    redis,
   }),
 });
 
