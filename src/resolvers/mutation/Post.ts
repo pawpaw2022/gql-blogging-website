@@ -2,6 +2,7 @@
 
 import { Context } from "../..";
 import { canUserMutatePost, getUserFromToken } from "../../utils/JwtAuth";
+import { deletePostOnRedis, updatePostsOnRedis } from "../../utils/Redis";
 import { validatePost } from "../../utils/Validation";
 interface PostArgs {
   title: string;
@@ -10,7 +11,11 @@ interface PostArgs {
 }
 
 export const PostMutation = {
-  createPost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+  createPost: async (
+    _: any,
+    args: PostArgs,
+    { prisma, auth, redis }: Context
+  ) => {
     const payload = await getUserFromToken(auth);
     if (!payload) return { error: { message: "You need to log in first." } };
     const { userId } = payload;
@@ -27,6 +32,10 @@ export const PostMutation = {
           authorId: userId,
         },
       });
+
+      // update redis cache
+      redis.lPush("posts", JSON.stringify(post));
+
       return {
         post,
       };
@@ -39,7 +48,11 @@ export const PostMutation = {
     }
   },
 
-  updatePost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+  updatePost: async (
+    _: any,
+    args: PostArgs,
+    { prisma, auth, redis }: Context
+  ) => {
     const { title, content, id: postId } = args;
 
     // Step 1: check if user is logged in
@@ -61,6 +74,10 @@ export const PostMutation = {
           content,
         },
       });
+
+      // update redis cache
+      await updatePostsOnRedis(redis, post);
+
       return {
         post,
       };
@@ -76,7 +93,7 @@ export const PostMutation = {
   deletePost: async (
     _: any,
     args: { id: string },
-    { prisma, auth }: Context
+    { prisma, auth, redis }: Context
   ) => {
     const { id: postId } = args;
 
@@ -95,6 +112,10 @@ export const PostMutation = {
           id: Number(postId),
         },
       });
+
+      // update redis cache
+      await deletePostOnRedis(redis, post.id);
+
       return {
         post,
       };
@@ -107,7 +128,11 @@ export const PostMutation = {
     }
   },
 
-  publishPost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+  publishPost: async (
+    _: any,
+    args: PostArgs,
+    { prisma, auth, redis }: Context
+  ) => {
     const { id: postId } = args;
 
     // Step 1: check if user is logged in
@@ -128,6 +153,10 @@ export const PostMutation = {
           published: true,
         },
       });
+
+      // update redis cache
+      updatePostsOnRedis(redis, post);
+
       return {
         post,
       };
@@ -140,7 +169,11 @@ export const PostMutation = {
     }
   },
 
-  unpublishPost: async (_: any, args: PostArgs, { prisma, auth }: Context) => {
+  unpublishPost: async (
+    _: any,
+    args: PostArgs,
+    { prisma, auth, redis }: Context
+  ) => {
     const { id: postId } = args;
 
     // Step 1: check if user is logged in
@@ -161,6 +194,10 @@ export const PostMutation = {
           published: false,
         },
       });
+
+      // update redis cache
+      updatePostsOnRedis(redis, post);
+
       return {
         post,
       };

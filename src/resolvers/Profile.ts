@@ -7,7 +7,7 @@ interface ProfileParent {
 }
 
 export const Profile = {
-  user: (parent: ProfileParent, _: any, { prisma }: any) => {
+  user: (parent: ProfileParent, _: any, __: any) => {
     const { userId } = parent;
     return userLoader.load(userId);
   },
