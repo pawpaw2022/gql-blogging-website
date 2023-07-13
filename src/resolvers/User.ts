@@ -1,5 +1,6 @@
 /** @format */
 import { Context } from "../index";
+import { profileLoader } from "../utils/Dataloader";
 
 interface UserParent {
   id: number;
@@ -17,10 +18,7 @@ export const User = {
 
   profile: (parent: UserParent, _: any, { prisma }: Context) => {
     const { id } = parent;
-    return prisma.profile.findUnique({
-      where: {
-        userId: id,
-      },
-    });
+
+    return profileLoader.load(id);
   },
 };

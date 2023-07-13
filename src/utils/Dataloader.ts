@@ -1,6 +1,6 @@
 /** @format */
 
-import { User } from "@prisma/client";
+import { Profile, User } from "@prisma/client";
 import DataLoader from "dataloader";
 import { prisma } from "../index";
 
@@ -22,7 +22,25 @@ const batchUsers = async (ids: number[]): Promise<User[]> => {
   return ids.map((id) => userMap[id]);
 };
 
+const batchProfiles = async (ids: number[]): Promise<Profile[]> => {
+  const profiles = await prisma.profile.findMany({
+    where: {
+      userId: {
+        in: ids,
+      },
+    },
+  });
+
+  // Sort the profiles in the order of the ids passed in
+  const profileMap: { [key: number]: Profile } = {};
+  profiles.forEach((p) => {
+    profileMap[p.userId] = p;
+  });
+
+  return ids.map((id) => profileMap[id]);
+};
+
 // This is the dataloader that will be used in the resolvers
 export const userLoader = new DataLoader<number, User>(batchUsers);
-
+export const profileLoader = new DataLoader<number, Profile>(batchProfiles);
 // Use: `userLoader().load(id)` to batch and cache the users
