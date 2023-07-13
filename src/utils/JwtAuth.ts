@@ -1,6 +1,6 @@
 /** @format */
 import jwt from "jsonwebtoken";
-import { HASHKEY } from "./hashKey";
+import { HASHKEY } from "./HashKey";
 import { PrismaClient } from "@prisma/client";
 
 interface UserJwtPayload {

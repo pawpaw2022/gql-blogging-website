@@ -1,5 +1,7 @@
 /** @format */
 
+import { userLoader } from "../utils/Dataloader";
+
 interface ProfileParent {
   userId: number;
 }
@@ -7,10 +9,6 @@ interface ProfileParent {
 export const Profile = {
   user: (parent: ProfileParent, _: any, { prisma }: any) => {
     const { userId } = parent;
-    return prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    return userLoader.load(userId);
   },
 };

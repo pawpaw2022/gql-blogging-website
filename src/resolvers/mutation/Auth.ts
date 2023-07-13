@@ -3,7 +3,7 @@
 import { validateCredentials, validateUser } from "../../utils/Validation";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { HASHKEY } from "../../utils/hashKey";
+import { HASHKEY } from "../../utils/HashKey";
 import { Context } from "../../index";
 
 interface UserArgs {

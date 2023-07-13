@@ -12,7 +12,7 @@ import { PostMutation } from "./resolvers/mutation/Post";
 import { UserAuth } from "./resolvers/mutation/Auth";
 import { ProfileMutation } from "./resolvers/mutation/Profile";
 
-const prisma = new PrismaClient();
+export const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient;

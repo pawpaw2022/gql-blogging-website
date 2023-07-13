@@ -1,16 +1,31 @@
 /** @format */
 import { Context } from "../index";
+import { getUserFromToken } from "../utils/JwtAuth";
 
 // Resolvers define how to fetch the types defined in your schema.
 export const Query = {
   hello: () => "World",
-  users: (_: any, __: any, { prisma }: Context) => {
-    return prisma.user.findMany();
-  },
-  user: (_: any, { id }: { id: String }, { prisma }: Context) => {
+
+  me: async (_: any, __: any, { prisma, auth }: Context) => {
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
+
     return prisma.user.findUnique({
       where: {
-        id: Number(id),
+        id: userId,
+      },
+    });
+  },
+
+  profile: async (
+    _: any,
+    { userId }: { userId: String },
+    { prisma }: Context
+  ) => {
+    return prisma.profile.findUnique({
+      where: {
+        userId: Number(userId),
       },
     });
   },
@@ -29,9 +44,5 @@ export const Query = {
         id: Number(id),
       },
     });
-  },
-
-  profiles: (_: any, __: any, { prisma }: Context) => {
-    return prisma.profile.findMany();
   },
 };

@@ -8,11 +8,16 @@ export const typeDefs = `#graphql
 
   type Query {
     hello: String
-    users: [User!]!
-    user(id: ID!): User!
+    
+    # Query user info (auth needed)
+    me: User
+
+    # Query others profiles 
+    profile(userId: ID!): Profile! 
+
+    # Query posts in which we can also query the author
     posts: [Post!]!
     post(id: ID!): Post!
-    profiles: [Profile!]!
   }
 
   type Mutation {
