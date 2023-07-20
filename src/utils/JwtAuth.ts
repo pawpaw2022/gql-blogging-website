@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { HASHKEY } from "./HashKey";
 
 interface UserJwtPayload {
-  userId: number;
+  userId: string;
   email: string;
 }
 
@@ -19,13 +19,13 @@ export const getUserFromToken = async (token: string) => {
 };
 export const canUserMutatePost = async (
   prisma: PrismaClient,
-  userId: number,
+  userId: string,
   postId: string
 ) => {
   // check if user can mutate post
   const post = await prisma.post.findUnique({
     where: {
-      id: Number(postId),
+      id: postId,
     },
   });
   if (!post) return { error: { message: "Post not found." } };

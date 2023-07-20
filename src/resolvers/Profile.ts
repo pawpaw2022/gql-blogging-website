@@ -3,7 +3,7 @@
 import { userLoader } from "../utils/Dataloader";
 
 interface ProfileParent {
-  userId: number;
+  userId: string;
 }
 
 export const Profile = {

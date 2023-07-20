@@ -4,7 +4,7 @@ import { profileLoader } from "../utils/Dataloader";
 import { parsePosts } from "../utils/Redis";
 
 interface UserParent {
-  id: number;
+  id: string;
 }
 
 export const User = {
@@ -22,5 +22,17 @@ export const User = {
     const { id } = parent;
 
     return profileLoader.load(id);
+  },
+
+  likes: async (parent: UserParent, _: any, { prisma }: Context) => {
+    const { id } = parent;
+
+    const likes = await prisma.like.findMany({
+      where: {
+        userId: id,
+      },
+    });
+
+    return likes;
   },
 };

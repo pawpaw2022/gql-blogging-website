@@ -1,10 +1,10 @@
 /** @format */
 
-import { Context } from "../..";
-import { canUserMutatePost, getUserFromToken } from "../../utils/JwtAuth";
-import { deletePostOnRedis, updatePostsOnRedis } from "../../utils/Redis";
-import { validatePost } from "../../utils/Validation";
-interface PostArgs {
+import { Context } from "../../..";
+import { canUserMutatePost, getUserFromToken } from "../../../utils/JwtAuth";
+import { deletePostOnRedis, updatePostsOnRedis } from "../../../utils/Redis";
+import { validatePost } from "../../../utils/Validation";
+export interface PostArgs {
   title: string;
   content: string;
   id: string; // for update
@@ -67,7 +67,7 @@ export const PostMutation = {
     try {
       const post = await prisma.post.update({
         where: {
-          id: Number(postId),
+          id: postId,
         },
         data: {
           title,
@@ -109,94 +109,12 @@ export const PostMutation = {
     try {
       const post = await prisma.post.delete({
         where: {
-          id: Number(postId),
+          id: postId,
         },
       });
 
       // update redis cache
       await deletePostOnRedis(redis, post.id);
-
-      return {
-        post,
-      };
-    } catch (e) {
-      return {
-        error: {
-          message: "Prisma Error Code: " + e.code,
-        },
-      };
-    }
-  },
-
-  publishPost: async (
-    _: any,
-    args: PostArgs,
-    { prisma, auth, redis }: Context
-  ) => {
-    const { id: postId } = args;
-
-    // Step 1: check if user is logged in
-    const payload = await getUserFromToken(auth);
-    if (!payload) return { error: { message: "You need to log in first." } };
-    const { userId } = payload;
-
-    // Step 2: check if user can mutate post
-    const canMutate = await canUserMutatePost(prisma, userId, postId);
-    if (canMutate?.error) return canMutate;
-
-    try {
-      const post = await prisma.post.update({
-        where: {
-          id: Number(postId),
-        },
-        data: {
-          published: true,
-        },
-      });
-
-      // update redis cache
-      updatePostsOnRedis(redis, post);
-
-      return {
-        post,
-      };
-    } catch (e) {
-      return {
-        error: {
-          message: "Prisma Error Code: " + e.code,
-        },
-      };
-    }
-  },
-
-  unpublishPost: async (
-    _: any,
-    args: PostArgs,
-    { prisma, auth, redis }: Context
-  ) => {
-    const { id: postId } = args;
-
-    // Step 1: check if user is logged in
-    const payload = await getUserFromToken(auth);
-    if (!payload) return { error: { message: "You need to log in first." } };
-    const { userId } = payload;
-
-    // Step 2: check if user can mutate post
-    const canMutate = await canUserMutatePost(prisma, userId, postId);
-    if (canMutate?.error) return canMutate;
-
-    try {
-      const post = await prisma.post.update({
-        where: {
-          id: Number(postId),
-        },
-        data: {
-          published: false,
-        },
-      });
-
-      // update redis cache
-      updatePostsOnRedis(redis, post);
 
       return {
         post,
