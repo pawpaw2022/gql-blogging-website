@@ -27,6 +27,8 @@ const cachePosts = async (redis: RedisClient) => {
 
   const postsString = posts.map((post: Post) => JSON.stringify(post));
 
+  if (postsString.length === 0) return posts;
+
   // store posts in redis lists type
   await redis.lPush("posts", postsString);
   //   console.log(await redis.lRange("posts", 0, -1));
@@ -64,7 +66,7 @@ export const updatePostsOnRedis = async (redis: RedisClient, post: Post) => {
   });
 };
 
-export const deletePostOnRedis = async (redis: RedisClient, postId: Number) => {
+export const deletePostOnRedis = async (redis: RedisClient, postId: String) => {
   // update redis cache
   const posts = await parsePosts(redis);
 

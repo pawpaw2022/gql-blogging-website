@@ -18,6 +18,12 @@ export const typeDefs = `#graphql
     # Query posts in which we can also query the author
     posts: [Post!]!
     post(id: ID!): Post!
+
+    # Query tags
+    tags: [Tag!]!
+
+    # Query avatars
+    avatars: [Avatar!]!
   }
 
   type Mutation {
@@ -25,6 +31,10 @@ export const typeDefs = `#graphql
     signup(credentials: Credentials!, name: String!, bio: String!): UserPayload!
     signin(credentials: Credentials!): UserPayload!
     
+    # Profile Update
+    updateProfile(bio: String!): ProfilePayload!
+
+    # TODO: Add tags when creating a post
     # Post Mutations
     createPost(title: String!, content: String!): PostPayload!
     updatePost(id: ID!, title: String, content: String): PostPayload!
@@ -34,10 +44,36 @@ export const typeDefs = `#graphql
     publishPost(id: ID!): PostPayload!
     unpublishPost(id: ID!): PostPayload!
 
-    # Profile Update
-    updateProfile(bio: String!): ProfilePayload!
-  }
+    
+    # Like a post 
+    likePost(postId: ID!): PostPayload!
+    unLikePost(postId: ID!): PostPayload!
 
+    # TODO: 
+    # Comment a post
+    commentPost(postId: ID!, content: String!): PostPayload!
+    editComment(commentId: ID!, content: String!): PostPayload!
+    deleteComment(commentId: ID!): PostPayload!
+
+    # TODO: 
+    # Assign tags to a post
+    assignTags(postId: ID!, tagIds: [ID!]!): PostPayload!
+    unAssignTags(postId: ID!, tagIds: [ID!]!): PostPayload!
+
+    # TODO: 
+    # Assign avatar to a profile
+    assignAvatar(avatarId: ID!): ProfilePayload!
+    unAssignAvatar: ProfilePayload!
+
+    # Create Tags 
+    createTag(name: String!): TagPayload!
+    deleteTag(id: ID!): TagPayload!
+
+    # Create Avatars 
+    createAvatar(url: String!): AvatarPayload!
+    deleteAvatar(id: ID!): AvatarPayload!
+
+  }
 
 
   type Post {
@@ -45,23 +81,54 @@ export const typeDefs = `#graphql
     title: String!
     content: String!
     published: Boolean
-    authorId: Int!
+    authorId: ID!
+    user: User!
+    tags: [Tag!]!
+    comments: [Comment!]!
+    likes: [Like!]!
+  }
+
+  type Comment {
+    id: ID!
+    content: String!
+    postId: ID!
+    post: Post!
+    userId: ID!
     user: User!
   }
 
+  type Like {
+    id: ID!
+    postId: ID!
+    userId: ID!
+  }
+
+
   type User {
     id: ID!
-    name: String!
+    firstName: String!
+    lastName: String
     email: String!
     profile: Profile!
     posts: [Post!]!
+    likes: [Like!]!
   }
 
   type Profile {
     id: ID!
     bio: String!
-    userId: Int!
+    userId: ID!
     user: User!
+  }
+
+  type Tag {
+    id: ID!
+    name: String!
+  }
+
+  type Avatar {
+    id: ID!
+    url: String!
   }
 
   type Error {
@@ -86,6 +153,16 @@ export const typeDefs = `#graphql
   input Credentials {
     email: String!
     password: String!
+  }
+
+  type TagPayload {
+    error: Error
+    tag: Tag
+  }
+
+  type AvatarPayload {
+    error: Error
+    avatar: Avatar
   }
 
 `;

@@ -22,13 +22,13 @@ export const ProfileMutation = {
     const { userId } = payload;
 
     // Step 2: check if user can mutate profile
-    if (Number(id) !== userId)
+    if (id !== userId)
       return { error: { message: "You do not own this profile" } };
 
     try {
       const profile = await prisma.profile.update({
         where: {
-          id: Number(id),
+          id,
         },
         data: {
           bio,

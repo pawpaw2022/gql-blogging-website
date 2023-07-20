@@ -1,4 +1,5 @@
 /** @format */
+import { Post } from "@prisma/client";
 import { Context } from "../index";
 import { getUserFromToken } from "../utils/JwtAuth";
 import { parsePosts } from "../utils/Redis";
@@ -21,12 +22,12 @@ export const Query = {
 
   profile: async (
     _: any,
-    { userId }: { userId: String },
+    { userId }: { userId: string },
     { prisma }: Context
   ) => {
     return prisma.profile.findUnique({
       where: {
-        userId: Number(userId),
+        userId: userId,
       },
     });
   },
@@ -35,9 +36,17 @@ export const Query = {
     return parsePosts(redis);
   },
 
-  post: async (_: any, { id }: { id: String }, { redis }: Context) => {
+  post: async (_: any, { id }: { id: string }, { redis }: Context) => {
     const posts = await parsePosts(redis);
-    const post = posts.find((post: any) => post.id === Number(id));
+    const post = posts.find((post: Post) => post.id === id);
     return post;
+  },
+
+  tags: async (_: any, __: any, { prisma }: Context) => {
+    return prisma.tag.findMany();
+  },
+
+  avatars: async (_: any, __: any, { prisma }: Context) => {
+    return prisma.avatar.findMany();
   },
 };

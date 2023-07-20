@@ -33,7 +33,7 @@ export const UserAuth = {
     try {
       const user = await prisma.user.create({
         data: {
-          name,
+          firstName: name,
           password: hashedPassword,
           email,
         },
