@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
+    "purge-cache": "redis-cli flushall",
     "dev": "tsx watch src/index.ts && nodemon src/index.ts",
     "prisma": "npx prisma studio"
   },

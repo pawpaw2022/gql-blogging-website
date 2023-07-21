@@ -28,7 +28,7 @@ export const typeDefs = `#graphql
 
   type Mutation {
     # User Auth 
-    signup(credentials: Credentials!, name: String!, bio: String!): UserPayload!
+    signup(credentials: Credentials!, firstName: String!, lastName: String, bio: String!): UserPayload!
     signin(credentials: Credentials!): UserPayload!
     
     # Profile Update
@@ -114,6 +114,7 @@ export const typeDefs = `#graphql
     bio: String!
     userId: ID!
     user: User!
+    avatarId: ID
     avatar: Avatar
   }
 

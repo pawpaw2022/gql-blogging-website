@@ -62,6 +62,8 @@ export const CommentMutation = {
         post,
       };
     } catch (e) {
+      //   console.log(e);
+
       return {
         error: {
           message: "Prisma Error Code: " + e.code,

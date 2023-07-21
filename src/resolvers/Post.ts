@@ -9,8 +9,11 @@ interface PostParent {
 }
 
 export const Post = {
-  user: (parent: PostParent, _: any, __: any) => {
+  user: async (parent: PostParent, _: any, __: any) => {
     const { authorId } = parent;
+
+    console.log(await userLoader.load(authorId));
+
     return userLoader.load(authorId);
   },
 

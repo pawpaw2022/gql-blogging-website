@@ -1,6 +1,5 @@
 /** @format */
 import { Context } from "../index";
-import { profileLoader } from "../utils/Dataloader";
 import { parsePosts } from "../utils/Redis";
 
 interface UserParent {
@@ -21,18 +20,34 @@ export const User = {
   profile: (parent: UserParent, _: any, { prisma }: Context) => {
     const { id } = parent;
 
-    return profileLoader.load(id);
-  },
-
-  likes: async (parent: UserParent, _: any, { prisma }: Context) => {
-    const { id } = parent;
-
-    const likes = await prisma.like.findMany({
+    return prisma.profile.findUnique({
       where: {
         userId: id,
       },
     });
+  },
+
+  likes: async (parent: UserParent, _: any, { prisma }: Context) => {
+    const { id: userId } = parent;
+
+    const likes = await prisma.like.findMany({
+      where: {
+        userId,
+      },
+    });
 
     return likes;
+  },
+
+  comments: async (parent: UserParent, _: any, { prisma }: Context) => {
+    const { id: userId } = parent;
+
+    const comments = await prisma.comment.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    return comments;
   },
 };

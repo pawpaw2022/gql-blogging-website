@@ -2,8 +2,12 @@
 
 import validator from "validator";
 
-export const validateUser = (email: string, password: string, name: string) => {
-  if (!validator.isLength(name, { min: 3 }))
+export const validateUser = (
+  email: string,
+  password: string,
+  firstName: string
+) => {
+  if (!validator.isLength(firstName, { min: 3 }))
     return {
       error: {
         message: "Name must be 3 characters long",

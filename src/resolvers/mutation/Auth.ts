@@ -7,7 +7,8 @@ import { HASHKEY } from "../../utils/HashKey";
 import { Context } from "../../index";
 
 interface UserArgs {
-  name: string;
+  firstName: string;
+  lastName: string;
   credentials: Credentials;
   bio: string;
   id: string; // for update
@@ -21,19 +22,29 @@ interface Credentials {
 export const UserAuth = {
   // create user
   signup: async (_: any, args: UserArgs, { prisma }: Context) => {
-    const { name, bio, credentials } = args;
+    const { firstName, lastName, bio, credentials } = args;
     const { email, password } = credentials;
 
-    const error = validateUser(email, password, name);
+    const error = validateUser(email, password, firstName);
     if (error) return error;
 
     // hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // capitalize first letter of first name
+    const capitalizedFirstName =
+      firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+
+    // capitalize first letter of last name
+    const capitalizedLastName =
+      lastName &&
+      lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+
     try {
       const user = await prisma.user.create({
         data: {
-          firstName: name,
+          firstName: capitalizedFirstName,
+          lastName: capitalizedLastName,
           password: hashedPassword,
           email,
         },
