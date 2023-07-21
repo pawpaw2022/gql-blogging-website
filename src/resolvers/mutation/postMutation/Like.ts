@@ -1,7 +1,7 @@
 /** @format */
 
 import { Context } from "../../..";
-import { canUserMutatePost, getUserFromToken } from "../../../utils/JwtAuth";
+import { getUserFromToken } from "../../../utils/JwtAuth";
 import { updatePostsOnRedis } from "../../../utils/Redis";
 
 export const LikeMutation = {
@@ -16,10 +16,6 @@ export const LikeMutation = {
     const payload = await getUserFromToken(auth);
     if (!payload) return { error: { message: "You need to log in first." } };
     const { userId } = payload;
-
-    // Step 2: check if user can mutate post
-    const canMutate = await canUserMutatePost(prisma, userId, postId);
-    if (canMutate?.error) return canMutate;
 
     try {
       // create Like
@@ -78,10 +74,6 @@ export const LikeMutation = {
     const payload = await getUserFromToken(auth);
     if (!payload) return { error: { message: "You need to log in first." } };
     const { userId } = payload;
-
-    // Step 2: check if user can mutate post
-    const canMutate = await canUserMutatePost(prisma, userId, postId);
-    if (canMutate?.error) return canMutate;
 
     try {
       // delete Like

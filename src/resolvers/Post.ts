@@ -14,7 +14,7 @@ export const Post = {
     return userLoader.load(authorId);
   },
 
-  likes: async (parent: PostParent, _: any, { redis, prisma }: Context) => {
+  likes: async (parent: PostParent, _: any, { prisma }: Context) => {
     const { id } = parent;
 
     const likes = await prisma.like.findMany({
@@ -25,5 +25,33 @@ export const Post = {
 
     // return likes array, need to return the length of the array
     return likes;
+  },
+
+  tags: async (parent: PostParent, _: any, { prisma }: Context) => {
+    const { id: postId } = parent;
+
+    const tags = await prisma.tag.findMany({
+      where: {
+        posts: {
+          some: {
+            id: postId,
+          },
+        },
+      },
+    });
+
+    return tags;
+  },
+
+  comments: async (parent: PostParent, _: any, { prisma }: Context) => {
+    const { id: postId } = parent;
+
+    const comments = await prisma.comment.findMany({
+      where: {
+        postId,
+      },
+    });
+
+    return comments;
   },
 };

@@ -7,11 +7,6 @@ interface TagsArgs {
   id: string;
 }
 
-interface AssignTagsArgs {
-  postId: string;
-  tagId: string;
-}
-
 export const TagMutation = {
   createTag: async (_: any, args: TagsArgs, { prisma }: Context) => {
     const { name } = args;
@@ -31,6 +26,14 @@ export const TagMutation = {
         tag,
       };
     } catch (e) {
+      if (e.code === "P2002") {
+        return {
+          error: {
+            message: "Tag already exists.",
+          },
+        };
+      }
+
       return {
         error: {
           message: "Prisma Error Code: " + e.code,
@@ -53,35 +56,14 @@ export const TagMutation = {
         tag,
       };
     } catch (e) {
-      return {
-        error: {
-          message: "Prisma Error Code: " + e.code,
-        },
-      };
-    }
-  },
-
-  assignTags: async (_: any, args: AssignTagsArgs, { prisma }: Context) => {
-    const { postId, tagId } = args;
-
-    try {
-      const post = await prisma.post.update({
-        where: {
-          id: postId,
-        },
-        data: {
-          tags: {
-            connect: {
-              id: tagId,
-            },
+      if (e.code === "P2002") {
+        return {
+          error: {
+            message: "Tag does not exist.",
           },
-        },
-      });
+        };
+      }
 
-      return {
-        post,
-      };
-    } catch (e) {
       return {
         error: {
           message: "Prisma Error Code: " + e.code,

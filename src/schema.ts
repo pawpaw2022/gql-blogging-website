@@ -44,23 +44,19 @@ export const typeDefs = `#graphql
     publishPost(id: ID!): PostPayload!
     unpublishPost(id: ID!): PostPayload!
 
-    
     # Like a post 
     likePost(postId: ID!): PostPayload!
     unLikePost(postId: ID!): PostPayload!
 
-    # TODO: 
     # Comment a post
-    commentPost(postId: ID!, content: String!): PostPayload!
-    editComment(commentId: ID!, content: String!): PostPayload!
+    createComment(postId: ID!, content: String!): PostPayload!
+    updateComment(commentId: ID!, content: String!): PostPayload!
     deleteComment(commentId: ID!): PostPayload!
 
-    # TODO: 
     # Assign tags to a post
-    assignTags(postId: ID!, tagIds: [ID!]!): PostPayload!
-    unAssignTags(postId: ID!, tagIds: [ID!]!): PostPayload!
+    assignTag(postId: ID!, tagId: ID!): PostPayload!
+    unAssignTag(postId: ID!, tagId: ID!): PostPayload!
 
-    # TODO: 
     # Assign avatar to a profile
     assignAvatar(avatarId: ID!): ProfilePayload!
     unAssignAvatar: ProfilePayload!
@@ -92,9 +88,7 @@ export const typeDefs = `#graphql
     id: ID!
     content: String!
     postId: ID!
-    post: Post!
     userId: ID!
-    user: User!
   }
 
   type Like {
@@ -112,6 +106,7 @@ export const typeDefs = `#graphql
     profile: Profile!
     posts: [Post!]!
     likes: [Like!]!
+    comments: [Comment!]!
   }
 
   type Profile {
@@ -119,6 +114,7 @@ export const typeDefs = `#graphql
     bio: String!
     userId: ID!
     user: User!
+    avatar: Avatar
   }
 
   type Tag {

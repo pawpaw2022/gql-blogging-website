@@ -8,12 +8,13 @@ import { CommentMutation } from "../resolvers/mutation/postMutation/Comment";
 import { LikeMutation } from "../resolvers/mutation/postMutation/Like";
 import { PostMutation } from "../resolvers/mutation/postMutation/Post";
 import { PublishMutation } from "../resolvers/mutation/postMutation/Publish";
+import { TagAssignMutation } from "../resolvers/mutation/postMutation/TagAssign";
 
 export const AllMutations = {
   ...UserAuth,
   ...PostMutation,
   ...LikeMutation,
-  ...TagMutation,
+  ...TagAssignMutation,
   ...CommentMutation,
   ...PublishMutation,
   ...ProfileMutation,

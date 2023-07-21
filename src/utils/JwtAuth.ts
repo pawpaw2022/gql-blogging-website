@@ -14,9 +14,12 @@ export const getUserFromToken = async (token: string) => {
     const decodedToken = jwt.verify(token, HASHKEY) as UserJwtPayload;
     return decodedToken;
   } catch (e) {
+    console.log("Token failed verification: ", e.message);
+
     return null;
   }
 };
+
 export const canUserMutatePost = async (
   prisma: PrismaClient,
   userId: string,
