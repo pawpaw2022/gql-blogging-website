@@ -79,6 +79,7 @@ export const typeDefs = `#graphql
     published: Boolean
     authorId: ID!
     user: User!
+    updatedAt: String!
     tags: [Tag!]!
     comments: [Comment!]!
     likes: [Like!]!
@@ -89,12 +90,15 @@ export const typeDefs = `#graphql
     content: String!
     postId: ID!
     userId: ID!
+    updatedAt: String!
+    user: User!
   }
 
   type Like {
     id: ID!
     postId: ID!
     userId: ID!
+    updatedAt: String!
   }
 
 
@@ -107,6 +111,7 @@ export const typeDefs = `#graphql
     posts: [Post!]!
     likes: [Like!]!
     comments: [Comment!]!
+    createdAt: String!
   }
 
   type Profile {

@@ -66,6 +66,14 @@ export const UserAuth = {
         token,
       };
     } catch (e) {
+      if (e.code === "P2002") {
+        return {
+          error: {
+            message: "Email has already been registered.",
+          },
+        };
+      }
+
       return {
         error: {
           message: "Prisma Error Code: " + e.code,

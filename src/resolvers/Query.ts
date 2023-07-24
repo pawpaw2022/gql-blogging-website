@@ -32,8 +32,11 @@ export const Query = {
     });
   },
 
-  posts: (_: any, __: any, { redis }: Context) => {
-    return parsePosts(redis);
+  posts: (_: any, __: any, { redis, prisma }: Context) => {
+    const posts = prisma.post.findMany();
+
+    return posts;
+    // return parsePosts(redis);
   },
 
   post: async (_: any, { id }: { id: string }, { redis }: Context) => {

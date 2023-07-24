@@ -10,6 +10,7 @@ import { Post } from "./resolvers/Post";
 import { Profile } from "./resolvers/Profile";
 import { redisStart } from "./utils/Redis";
 import { AllMutations } from "./utils/MutationRefactor";
+import { Comment } from "./resolvers/mutation/Comment";
 
 export const prisma = new PrismaClient();
 
@@ -32,6 +33,7 @@ const server = new ApolloServer({
     User,
     Post,
     Profile,
+    Comment,
     Mutation: AllMutations,
   },
 });
