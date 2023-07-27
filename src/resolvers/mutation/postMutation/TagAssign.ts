@@ -3,6 +3,7 @@
 import { Context } from "../../..";
 import { canUserMutatePost, getUserFromToken } from "../../../utils/JwtAuth";
 import { updatePostsOnRedis } from "../../../utils/Redis";
+import { validatePost } from "../../../utils/Validation";
 
 interface AssignTagsArgs {
   postId: string;
@@ -104,6 +105,60 @@ export const TagAssignMutation = {
           },
         };
       }
+      return {
+        error: {
+          message: "Prisma Error Code: " + e.code,
+        },
+      };
+    }
+  },
+
+  createPostwTags: async (
+    _: any,
+    args: { title: string; content: string; tagIds: string[] },
+    { prisma, auth, redis }: Context
+  ) => {
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
+
+    const { title, content, tagIds } = args;
+
+    if (validatePost(title, content)) return validatePost(title, content);
+
+    try {
+      const post = await prisma.post.create({
+        data: {
+          title,
+          content,
+          authorId: userId,
+        },
+      });
+
+      for (const tagId of tagIds) {
+        await prisma.post.update({
+          where: {
+            id: post.id,
+          },
+          data: {
+            tags: {
+              connect: {
+                id: tagId,
+              },
+            },
+          },
+        });
+      }
+
+      // update redis cache
+      redis.lPush("posts", JSON.stringify(post));
+
+      return {
+        post,
+      };
+    } catch (e) {
+      console.log(e);
+
       return {
         error: {
           message: "Prisma Error Code: " + e.code,

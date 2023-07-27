@@ -33,10 +33,9 @@ export const Query = {
   },
 
   posts: (_: any, __: any, { redis, prisma }: Context) => {
-    const posts = prisma.post.findMany();
-
-    return posts;
-    // return parsePosts(redis);
+    // const posts = prisma.post.findMany();
+    // return posts;
+    return parsePosts(redis);
   },
 
   post: async (_: any, { id }: { id: string }, { redis }: Context) => {
@@ -47,6 +46,10 @@ export const Query = {
 
   tags: async (_: any, __: any, { prisma }: Context) => {
     return prisma.tag.findMany();
+  },
+
+  categories: async (_: any, __: any, { prisma }: Context) => {
+    return prisma.category.findMany();
   },
 
   avatars: async (_: any, __: any, { prisma }: Context) => {

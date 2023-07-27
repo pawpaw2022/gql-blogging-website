@@ -13,7 +13,7 @@ export const redisStart = async (): Promise<RedisClient> => {
 
   await client.connect();
 
-  client.expire("posts", 60 * 60 * 24); // 24 hours
+  client.expire("posts", 60 * 10); // 10 minutes
 
   return client;
 };
@@ -41,8 +41,12 @@ export const parsePosts = async (redis: RedisClient): Promise<Post[]> => {
 
   if (cache.length > 0) {
     const posts = cache.map((post: string) => JSON.parse(post));
+    console.log("posts cache hit");
+
     return posts;
   }
+
+  console.log("posts cache miss");
 
   const posts = await cachePosts(redis);
 

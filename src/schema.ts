@@ -19,6 +19,9 @@ export const typeDefs = `#graphql
     posts: [Post!]!
     post(id: ID!): Post!
 
+    # Fetch all categories 
+    categories: [Category!]!
+
     # Query tags
     tags: [Tag!]!
 
@@ -34,7 +37,6 @@ export const typeDefs = `#graphql
     # Profile Update
     updateProfile(bio: String!): ProfilePayload!
 
-    # TODO: Add tags when creating a post
     # Post Mutations
     createPost(title: String!, content: String!): PostPayload!
     updatePost(id: ID!, title: String, content: String): PostPayload!
@@ -49,21 +51,18 @@ export const typeDefs = `#graphql
     unLikePost(postId: ID!): PostPayload!
 
     # Comment a post
-    createComment(postId: ID!, content: String!): PostPayload!
-    updateComment(commentId: ID!, content: String!): PostPayload!
-    deleteComment(commentId: ID!): PostPayload!
+    createComment(postId: ID!, content: String!): CommentPayload!
+    updateComment(commentId: ID!, content: String!): CommentPayload!
+    deleteComment(commentId: ID!): CommentPayload!
 
     # Assign tags to a post
     assignTag(postId: ID!, tagId: ID!): PostPayload!
     unAssignTag(postId: ID!, tagId: ID!): PostPayload!
+    createPostwTags(title: String!, content: String!, tagIds: [ID!]!): PostPayload!
 
     # Assign avatar to a profile
     assignAvatar(avatarId: ID!): ProfilePayload!
     unAssignAvatar: ProfilePayload!
-
-    # Create Tags 
-    createTag(name: String!): TagPayload!
-    deleteTag(id: ID!): TagPayload!
 
     # Create Avatars 
     createAvatar(url: String!): AvatarPayload!
@@ -99,6 +98,12 @@ export const typeDefs = `#graphql
     postId: ID!
     userId: ID!
     updatedAt: String!
+  }
+
+  type Category {
+    id: ID!
+    name: String!
+    tags: [Tag!]!
   }
 
 
@@ -157,14 +162,14 @@ export const typeDefs = `#graphql
     password: String!
   }
 
-  type TagPayload {
-    error: Error
-    tag: Tag
-  }
-
   type AvatarPayload {
     error: Error
     avatar: Avatar
+  }
+
+  type CommentPayload{
+    error: Error
+    comment: Comment
   }
 
 `;

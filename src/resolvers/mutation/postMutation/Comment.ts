@@ -42,7 +42,7 @@ export const CommentMutation = {
       });
 
       // update user
-      const user = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: userId,
         },
@@ -59,7 +59,7 @@ export const CommentMutation = {
       updatePostsOnRedis(redis, post);
 
       return {
-        post,
+        comment,
       };
     } catch (e) {
       //   console.log(e);
@@ -112,7 +112,7 @@ export const CommentMutation = {
       updatePostsOnRedis(redis, post);
 
       return {
-        post,
+        comment,
       };
     } catch (e) {
       return {
@@ -166,7 +166,7 @@ export const CommentMutation = {
       updatePostsOnRedis(redis, post);
 
       return {
-        post,
+        comment,
       };
     } catch (e) {
       return {
