@@ -71,8 +71,25 @@ const postCategories = [
   },
 ];
 
+async function deleteExistingData() {
+  try {
+    // Delete all tags
+    await prisma.tag.deleteMany();
+
+    // Delete all categories
+    await prisma.category.deleteMany();
+
+    console.log("Deleted existing data: categories and tags");
+  } catch (error) {
+    console.error("Error deleting existing data:", error);
+  }
+}
+
 async function insertCategoriesAndTags() {
   try {
+    // First, delete all existing data
+    await deleteExistingData();
+
     for (const categoryData of postCategories) {
       // Insert the category
       const createdCategory = await prisma.category.create({
