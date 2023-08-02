@@ -1,5 +1,6 @@
 /** @format */
 
+import { log } from "console";
 import { userLoader } from "../utils/Dataloader";
 
 interface ProfileParent {
@@ -15,6 +16,12 @@ export const Profile = {
 
   avatar: async (parent: ProfileParent, _: any, { prisma }: any) => {
     const { avatarId } = parent;
+
+    if (!avatarId)
+      return {
+        id: "default",
+        url: "",
+      };
 
     const avatar = await prisma.avatar.findUnique({
       where: {

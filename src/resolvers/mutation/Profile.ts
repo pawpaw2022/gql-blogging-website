@@ -46,6 +46,54 @@ export const ProfileMutation = {
     }
   },
 
+  updateUser: async (
+    _: any,
+    args: {
+      bio: string;
+      firstName: string;
+      lastName: string;
+    },
+    { prisma, auth }: Context
+  ) => {
+    const { bio, firstName, lastName } = args;
+
+    // Step 1: check if user is logged in
+    const payload = await getUserFromToken(auth);
+    if (!payload) return { error: { message: "You need to log in first." } };
+    const { userId } = payload;
+
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          firstName,
+          lastName,
+        },
+      });
+
+      const profile = await prisma.profile.update({
+        where: {
+          userId,
+        },
+        data: {
+          bio,
+        },
+      });
+
+      return {
+        profile,
+      };
+    } catch (e) {
+      return {
+        error: {
+          message: "Prisma Error Code: " + e.code,
+        },
+      };
+    }
+  },
+
   assignAvatar: async (
     _: any,
     args: { avatarId: string },

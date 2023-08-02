@@ -54,6 +54,7 @@ export const UserAuth = {
         data: {
           bio,
           userId: user.id,
+          
         },
       });
 

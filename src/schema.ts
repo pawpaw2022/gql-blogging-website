@@ -36,6 +36,7 @@ export const typeDefs = `#graphql
     
     # Profile Update
     updateProfile(bio: String!): ProfilePayload!
+    updateUser(firstName: String!, lastName: String!, bio: String!): ProfilePayload!
 
     # Post Mutations
     createPost(title: String!, content: String!): PostPayload!
@@ -59,6 +60,7 @@ export const typeDefs = `#graphql
     assignTag(postId: ID!, tagId: ID!): PostPayload!
     unAssignTag(postId: ID!, tagId: ID!): PostPayload!
     createPostwTags(title: String!, content: String!, tagIds: [ID!]!): PostPayload!
+    updatePostwTags(postId: ID!, title: String!, content: String!, tagIds: [ID!]!): PostPayload!
 
     # Assign avatar to a profile
     assignAvatar(avatarId: ID!): ProfilePayload!
@@ -97,6 +99,7 @@ export const typeDefs = `#graphql
     id: ID!
     postId: ID!
     userId: ID!
+    posts: [Post!]!
     updatedAt: String!
   }
 
@@ -171,5 +174,6 @@ export const typeDefs = `#graphql
     error: Error
     comment: Comment
   }
+
 
 `;

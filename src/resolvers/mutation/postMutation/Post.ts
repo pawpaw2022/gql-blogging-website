@@ -107,6 +107,34 @@ export const PostMutation = {
     if (canMutate?.error) return canMutate;
 
     try {
+      // delete all comments
+      await prisma.comment.deleteMany({
+        where: {
+          postId,
+        },
+      });
+
+      // delete all likes
+      await prisma.like.deleteMany({
+        where: {
+          postId,
+        },
+      });
+
+      // disconnect all tags
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          tags: {
+            disconnect: {
+              id: postId,
+            },
+          },
+        },
+      });
+
       const post = await prisma.post.delete({
         where: {
           id: postId,
@@ -120,6 +148,8 @@ export const PostMutation = {
         post,
       };
     } catch (e) {
+      console.log(e);
+
       return {
         error: {
           message: "Prisma Error Code: " + e.code,

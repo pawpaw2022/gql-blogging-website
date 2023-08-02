@@ -1,6 +1,6 @@
 /** @format */
 
-import { userLoader } from "../../utils/Dataloader";
+import { userLoader } from "../utils/Dataloader";
 
 interface CommentParent {
   userId: string;
