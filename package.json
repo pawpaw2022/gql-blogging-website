@@ -7,7 +7,8 @@
     "purge-cache": "redis-cli flushall",
     "data": "node src/data/InsertAvatars.js && node src/data/InsertTagsAndCategories.js ", 
     "dev": "tsx watch src/index.ts && nodemon src/index.ts",
-    "prisma": "npx prisma studio"
+    "prisma-studio": "npx prisma studio",
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
