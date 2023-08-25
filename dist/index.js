@@ -22,28 +22,28 @@ const redis = await redisStart();
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
 const server = new ApolloServer({
-    typeDefs,
-    resolvers: {
-        Query,
-        User,
-        Post,
-        Profile,
-        Comment,
-        Like,
-        Category,
-        Mutation: AllMutations,
-    },
+  typeDefs,
+  resolvers: {
+    Query,
+    User,
+    Post,
+    Profile,
+    Comment,
+    Like,
+    Category,
+    Mutation: AllMutations,
+  },
 });
 // Passing an ApolloServer instance to the `startStandaloneServer` function:
 //  1. creates an Express app
 //  2. installs your ApolloServer instance as middleware
 //  3. prepares your app to handle incoming requests
 const { url } = await startStandaloneServer(server, {
-    listen: { port: Number(process.env.PORT) || 4000 },
-    context: async ({ req }) => ({
-        prisma,
-        auth: req.headers.authorization,
-        redis,
-    }),
+  listen: { port: Number(process.env.PORT) || 4000 },
+  context: async ({ req }) => ({
+    prisma,
+    auth: req.headers.authorization,
+    redis,
+  }),
 });
 console.log(`🚀  Server ready at: ${url}`);
