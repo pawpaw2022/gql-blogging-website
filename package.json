@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node src/index.ts",
+    "start": "node dist/index.js",
     "purge-cache": "redis-cli flushall",
     "data": "node src/data/InsertAvatars.js && node src/data/InsertTagsAndCategories.js ",
     "dev": "tsx watch src/index.ts && nodemon src/index.ts",
