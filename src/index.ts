@@ -13,6 +13,12 @@ import { AllMutations } from "./utils/MutationRefactor";
 import { Comment } from "./resolvers/Comment";
 import { Category } from "./resolvers/Category";
 import { Like } from "./resolvers/Like";
+import dotenv from "dotenv";
+dotenv.config();
+
+// console.log(process.env.REDIS_URL);
+// console.log(process.env.HASHKEY);
+// console.log(process.env.DATABASE_URL);
 
 export const prisma = new PrismaClient();
 

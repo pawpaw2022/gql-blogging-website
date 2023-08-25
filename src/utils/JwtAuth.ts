@@ -1,7 +1,6 @@
 /** @format */
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import { HASHKEY } from "./HashKey";
 
 interface UserJwtPayload {
   userId: string;
@@ -11,7 +10,10 @@ interface UserJwtPayload {
 export const getUserFromToken = async (token: string) => {
   // check if user is authenticated
   try {
-    const decodedToken = jwt.verify(token, HASHKEY) as UserJwtPayload;
+    const decodedToken = jwt.verify(
+      token,
+      process.env.HASHKEY
+    ) as UserJwtPayload;
     return decodedToken;
   } catch (e) {
     console.log("Token failed verification: ", e.message);

@@ -3,7 +3,6 @@
 import { validateCredentials, validateUser } from "../../utils/Validation";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { HASHKEY } from "../../utils/HashKey";
 import { Context } from "../../index";
 
 interface UserArgs {
@@ -54,12 +53,11 @@ export const UserAuth = {
         data: {
           bio,
           userId: user.id,
-          
         },
       });
 
       // generate token
-      const token = jwt.sign({ userId: user.id, email }, HASHKEY, {
+      const token = jwt.sign({ userId: user.id, email }, process.env.HASHKEY, {
         expiresIn: "1d", // expires in 1 day
       });
 
@@ -116,7 +114,7 @@ export const UserAuth = {
       };
 
     return {
-      token: jwt.sign({ userId: user.id, email }, HASHKEY, {
+      token: jwt.sign({ userId: user.id, email }, process.env.HASHKEY, {
         expiresIn: "1d", // expires in 1 day
       }),
     };
