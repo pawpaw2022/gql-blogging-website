@@ -2,6 +2,8 @@
 
 # Facebowl GraphQL Blogging Website (Serverside)
 
+## [Facebowl Clientside](https://github.com/pawpaw2022/gql-blogging-website-client)
+
 ![Facebowl logo](./public/logo.png)
 
 Welcome to Facebowl, a powerful and efficient blogging website built using GraphQL and various modern technologies. This project leverages GraphQL, Apollo Server, Prisma, MySQL, Redis, TypeScript, and Node.js to provide a seamless and interactive blogging experience.
